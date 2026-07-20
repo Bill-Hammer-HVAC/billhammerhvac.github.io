@@ -155,61 +155,6 @@ Do not change DNS automatically. At the DNS provider:
 
 DNS propagation, GitHub Pages deployment, and SSL issuance cannot be proven by a local build.
 
-## Accessibility checklist
-
-- Navigate every page and the mobile menu using only a keyboard.
-- Confirm the skip link, visible focus rings, Escape-to-close, and focus restoration.
-- Test at 200% and 400% zoom without horizontal page scrolling.
-- Check 320px, tablet, and desktop layouts.
-- Test with reduced motion enabled.
-- Verify form labels, required messages, failure recovery, and status focus.
-- Run `npm test` and review any axe violations.
-- Test with at least one screen reader before launch.
-- Recheck color contrast if design tokens change.
-
-## Content verification TODOs
-
-### Launch critical
-
-- **Contractor status:** On July 19, 2026, the official CSLB record for license `679211` stated: “This license is canceled and not able to contract,” with cancellation requested October 19, 2023. At the owner’s direction, the public site displays only `LICENSE #679211`. Bill must confirm the present legal/business status before the site is promoted.
-- Confirm that the business is currently accepting estimate requests and HVAC work.
-- Confirm FormBackend notifications reach the intended monitored email address.
-
-### Business details
-
-- Confirm that 2230 Dufour Ave, Redondo Beach, CA 90278 should remain public and customer-facing.
-- Confirm current business hours; none are published because the former site did not establish them reliably.
-- Confirm exact city/service boundaries beyond the first-party “South Bay” statement.
-- Reconfirm the current availability and terms of senior discounts and referrals upon request.
-- Reconfirm residential and commercial availability and every migrated service category.
-- Confirm whether maintenance/tune-ups or mini-split work should be added; they are currently omitted.
-- Supply any official Google Business Profile, additional social links, or approved branded Open Graph image.
-- Confirm whether the fax number remains monitored.
-
-## Launch checklist
-
-- Resolve all launch-critical verification items above.
-- Run `npm ci`, `npm run check`, `npm run build`, and `npm test` from a clean checkout.
-- Inspect `dist/` for `CNAME`, `robots.txt`, `sitemap-index.xml`, and exact mixed-case legacy HTML files.
-- Preview the production build with the real public variables.
-- Test navigation, calls, email, Yelp, native form POST, enhanced form success/failure, and analytics events.
-- Run Lighthouse on representative mobile and desktop profiles and address regressions.
-- Complete keyboard, screen-reader, zoom, and reflow checks.
-- Review all public copy and the license display with Bill.
-- Configure GitHub Pages, repository variables, custom domain, DNS, and HTTPS.
-
-## Post-launch checklist
-
-- Verify the apex and `www` behavior, certificate, canonical tags, robots file, and sitemap over HTTPS.
-- Submit the sitemap to the relevant search consoles.
-- Confirm exact legacy URLs redirect without loops.
-- Send a real estimate request and confirm delivery.
-- Confirm GA4 page views and conversion events without assuming immediate reporting.
-- Check browser consoles and network errors on mobile and desktop.
-- Monitor broken links and form spam.
-- Recheck the public CSLB record before changing any license disclosure.
-- Schedule periodic reviews of services, promotions, contact details, dependencies, and accessibility.
-
 ## Source notes
 
 First-party content was recovered from Internet Archive captures of the previous site’s Home, Services, About, Testimonials, and Contact pages from 2013. That site verified the company name, phone, fax, email, South Bay statement, 1992 founding, Bill Hammer, free in-home estimates, listed services, four testimonials, senior discounts, referrals, and license number. The license status and address were checked separately against the official California Contractors State License Board record.
