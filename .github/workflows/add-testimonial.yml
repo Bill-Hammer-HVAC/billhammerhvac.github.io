@@ -1,0 +1,105 @@
+name: Add testimonial
+
+on:
+  workflow_dispatch:
+    inputs:
+      names:
+        description: Customer name or names exactly as they should appear
+        required: true
+        type: string
+      location:
+        description: Customer city or location
+        required: true
+        type: string
+      role:
+        description: Optional role or organization
+        required: false
+        type: string
+      quote:
+        description: Testimonial text (paste the complete quote)
+        required: true
+        type: string
+      order:
+        description: Display position (1 is first)
+        required: true
+        default: '1'
+        type: string
+      featured:
+        description: Feature this testimonial on the homepage
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: testimonial-content
+  cancel-in-progress: false
+
+jobs:
+  add-testimonial:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create content branch
+        id: branch
+        run: |
+          branch_name="content/testimonial-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          git switch -c "$branch_name"
+          echo "name=$branch_name" >> "$GITHUB_OUTPUT"
+
+      - name: Insert testimonial
+        env:
+          TESTIMONIAL_NAMES: ${{ inputs.names }}
+          TESTIMONIAL_LOCATION: ${{ inputs.location }}
+          TESTIMONIAL_ROLE: ${{ inputs.role }}
+          TESTIMONIAL_QUOTE: ${{ inputs.quote }}
+          TESTIMONIAL_ORDER: ${{ inputs.order }}
+          TESTIMONIAL_FEATURED: ${{ inputs.featured }}
+        run: node scripts/add-testimonial.mjs
+
+      - name: Validate content and build
+        env:
+          ASTRO_TELEMETRY_DISABLED: '1'
+        run: npm run build
+
+      - name: Commit and push testimonial branch
+        env:
+          TESTIMONIAL_NAMES: ${{ inputs.names }}
+          TESTIMONIAL_ORDER: ${{ inputs.order }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/content/testimonials
+          git commit -m "Add testimonial from ${TESTIMONIAL_NAMES} at position ${TESTIMONIAL_ORDER}"
+          git push --set-upstream origin "${{ steps.branch.outputs.name }}"
+
+      - name: Open pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TESTIMONIAL_NAMES: ${{ inputs.names }}
+          TESTIMONIAL_ORDER: ${{ inputs.order }}
+          TESTIMONIAL_LOCATION: ${{ inputs.location }}
+          TESTIMONIAL_FEATURED: ${{ inputs.featured }}
+        run: |
+          gh pr create \
+            --base main \
+            --head "${{ steps.branch.outputs.name }}" \
+            --title "Add testimonial from ${TESTIMONIAL_NAMES}" \
+            --body "Adds a testimonial from ${TESTIMONIAL_NAMES} (${TESTIMONIAL_LOCATION}) at display position ${TESTIMONIAL_ORDER}. Homepage featured: ${TESTIMONIAL_FEATURED}. The Astro content check and production build passed before this pull request was opened."
